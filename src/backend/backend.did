@@ -1,0 +1,59 @@
+type Reservation = 
+ record {
+   createdAt: int;
+   customerName: text;
+   date: text;
+   id: nat;
+   numberOfGuests: nat;
+   phone: text;
+   time: text;
+ };
+type OrderItem = 
+ record {
+   menuItemId: nat;
+   quantity: nat;
+ };
+type Order = 
+ record {
+   createdAt: int;
+   id: nat;
+   items: vec OrderItem;
+   status: text;
+   tableNumber: nat;
+   totalPrice: float64;
+ };
+type MenuItem = 
+ record {
+   available: bool;
+   category: text;
+   id: nat;
+   name: text;
+   price: float64;
+ };
+type AdminStats = 
+ record {
+   pendingOrders: nat;
+   totalMenuItems: nat;
+   totalOrders: nat;
+   totalReservations: nat;
+   totalRevenue: float64;
+ };
+service : {
+  addMenuItem: (name: text, category: text, price: float64, available:
+   bool) -> (MenuItem);
+  createOrder: (tableNumber: nat, items: vec OrderItem, totalPrice:
+   float64) -> (Order);
+  createReservation: (customerName: text, phone: text, date: text, time:
+   text, numberOfGuests: nat) -> (Reservation);
+  deleteMenuItem: (id: nat) -> (bool);
+  deleteOrder: (id: nat) -> (bool);
+  deleteReservation: (id: nat) -> (bool);
+  getAdminStats: () -> (AdminStats) query;
+  getMenuItemById: (id: nat) -> (opt MenuItem) query;
+  getMenuItems: () -> (vec MenuItem) query;
+  getOrders: () -> (vec Order) query;
+  getReservations: () -> (vec Reservation) query;
+  updateMenuItem: (id: nat, name: text, category: text, price: float64,
+   available: bool) -> (opt MenuItem);
+  updateOrderStatus: (id: nat, status: text) -> (opt Order);
+}

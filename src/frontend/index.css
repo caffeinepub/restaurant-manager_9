@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+
+    /* Warm Cream / Parchment light palette */
+    --background: 0.97 0.012 75;
+    --foreground: 0.18 0.03 40;
+
+    --card: 0.99 0.008 72;
+    --card-foreground: 0.18 0.03 40;
+
+    --popover: 0.99 0.008 72;
+    --popover-foreground: 0.18 0.03 40;
+
+    /* Deep Burgundy primary */
+    --primary: 0.38 0.11 12;
+    --primary-foreground: 0.97 0.012 75;
+
+    /* Muted warm secondary */
+    --secondary: 0.93 0.015 70;
+    --secondary-foreground: 0.28 0.05 30;
+
+    --muted: 0.93 0.012 72;
+    --muted-foreground: 0.52 0.025 45;
+
+    /* Gold accent */
+    --accent: 0.75 0.14 78;
+    --accent-foreground: 0.18 0.03 40;
+
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 0.97 0.012 75;
+
+    --border: 0.88 0.02 65;
+    --input: 0.90 0.018 68;
+    --ring: 0.55 0.12 12;
+
+    /* Status colors */
+    --status-pending: 0.78 0.17 82;
+    --status-preparing: 0.65 0.14 230;
+    --status-served: 0.62 0.17 145;
+    --status-completed: 0.56 0.01 60;
+
+    /* Chart colors */
+    --chart-1: 0.38 0.11 12;
+    --chart-2: 0.75 0.14 78;
+    --chart-3: 0.62 0.17 145;
+    --chart-4: 0.65 0.14 230;
+    --chart-5: 0.55 0.22 25;
+
+    --sidebar: 0.99 0.008 72;
+    --sidebar-foreground: 0.18 0.03 40;
+    --sidebar-primary: 0.38 0.11 12;
+    --sidebar-primary-foreground: 0.97 0.012 75;
+    --sidebar-accent: 0.93 0.015 70;
+    --sidebar-accent-foreground: 0.28 0.05 30;
+    --sidebar-border: 0.88 0.02 65;
+    --sidebar-ring: 0.55 0.12 12;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Outfit", "Trebuchet MS", sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  }
+}
+
+/* ── Utility classes ───────────────────────────────────────── */
+.font-display {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+}
+
+.font-accent {
+  font-family: "Fraunces", Georgia, serif;
+}
+
+.font-body {
+  font-family: "Outfit", "Trebuchet MS", sans-serif;
+}
+
+/* ── Decorative divider ──────────────────────────────────── */
+.ornamental-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: oklch(var(--accent));
+}
+
+.ornamental-divider::before,
+.ornamental-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    oklch(var(--accent) / 0.6),
+    transparent
+  );
+}
+
+/* ── Warm paper texture overlay ──────────────────────────── */
+.texture-overlay {
+  position: relative;
+}
+
+.texture-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Hero gradient ───────────────────────────────────────── */
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    oklch(0.22 0.06 12) 0%,
+    oklch(0.32 0.09 15) 40%,
+    oklch(0.28 0.07 25) 70%,
+    oklch(0.20 0.05 10) 100%
+  );
+}
+
+/* ── Nav blur ────────────────────────────────────────────── */
+.nav-blur {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ── Status badge colors ─────────────────────────────────── */
+.status-pending {
+  background-color: oklch(0.97 0.08 82 / 0.2);
+  color: oklch(0.55 0.14 70);
+  border-color: oklch(0.78 0.14 82 / 0.4);
+}
+
+.status-preparing {
+  background-color: oklch(0.96 0.05 230 / 0.2);
+  color: oklch(0.45 0.16 240);
+  border-color: oklch(0.65 0.14 230 / 0.4);
+}
+
+.status-served {
+  background-color: oklch(0.95 0.06 145 / 0.2);
+  color: oklch(0.40 0.14 150);
+  border-color: oklch(0.62 0.14 145 / 0.4);
+}
+
+.status-completed {
+  background-color: oklch(0.93 0.01 60 / 0.2);
+  color: oklch(0.45 0.02 60);
+  border-color: oklch(0.56 0.01 60 / 0.4);
+}
+
+/* ── Menu card hover ──────────────────────────────────────── */
+.menu-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px oklch(0.18 0.04 40 / 0.12);
+}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: oklch(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(var(--border));
+  border-radius: 3px;
+}
