@@ -5,11 +5,11 @@ import { Menu, UtensilsCrossed, X } from "lucide-react";
 import { useState } from "react";
 
 const navLinks = [
-  { to: "/", label: "Home" },
-  { to: "/menu", label: "Menu" },
-  { to: "/order", label: "Order" },
-  { to: "/reservation", label: "Reservations" },
-  { to: "/admin", label: "Admin" },
+  { to: "/", label: "Home", ocid: "nav.home_link" },
+  { to: "/menu", label: "Menu", ocid: "nav.menu_link" },
+  { to: "/order", label: "Order", ocid: "nav.order_link" },
+  { to: "/reservations", label: "Reservations", ocid: "nav.reservations_link" },
+  { to: "/admin", label: "Admin", ocid: "nav.admin_link" },
 ] as const;
 
 function useCurrentPath() {
@@ -50,6 +50,7 @@ export default function NavBar() {
             <Link
               key={link.to}
               to={link.to}
+              data-ocid={link.ocid}
               className={cn(
                 "font-body text-sm font-medium px-3.5 py-1.5 rounded-md transition-all duration-200",
                 isActive(link.to)
@@ -86,6 +87,7 @@ export default function NavBar() {
               <Link
                 key={link.to}
                 to={link.to}
+                data-ocid={link.ocid}
                 onClick={() => setMobileOpen(false)}
                 className={cn(
                   "font-body text-sm font-medium px-3 py-2.5 rounded-md transition-all",

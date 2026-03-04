@@ -1,47 +1,27 @@
 # Restaurant Manager
 
 ## Current State
-New project. No existing code.
+Full-stack restaurant management app with a Motoko backend and React frontend. Backend has complete CRUD for Menu Items, Orders, Reservations, and Admin Stats. The previous draft expired and needs to be redeployed with a fresh frontend build.
 
 ## Requested Changes (Diff)
 
 ### Add
-- Menu Items management: id, name, category, price, availability (CRUD)
-- Orders management: id, table_number, items (list of menu item ids + qty), total_price, status (Pending/Preparing/Served/Completed)
-- Reservations management: id, customer_name, phone, date, time, number_of_guests
-- Sample seed data for menu items (appetizers, mains, desserts, drinks)
-- Admin dashboard showing summary stats (total orders, reservations, revenue) and ability to manage all records
-- Home page with restaurant overview
-- Menu page with category filter/search
-- Create Order page with auto-calculated total
-- Reservation booking form page
-- Flash/toast notifications for success and errors
-- Responsive navigation bar across all pages
+- Nothing new; user confirmed to rebuild/redeploy the existing app.
 
 ### Modify
-Nothing -- new project.
+- Rebuild the frontend to ensure it compiles and deploys correctly against the existing backend APIs.
 
 ### Remove
-Nothing -- new project.
+- Nothing.
 
 ## Implementation Plan
-1. Backend (Motoko):
-   - MenuItem type: id, name, category, price, availability
-   - Order type: id, tableNumber, items (array of {menuItemId, quantity}), totalPrice, status
-   - Reservation type: id, customerName, phone, date, time, numberOfGuests
-   - CRUD for MenuItems (addMenuItem, updateMenuItem, deleteMenuItem, getMenuItems)
-   - Order functions: createOrder, updateOrderStatus, getOrders
-   - Reservation functions: createReservation, getReservations, deleteReservation
-   - Seed sample menu data on init
-   - Admin stats query: totalOrders, totalRevenue, pendingOrders, totalReservations
-
-2. Frontend (React + TypeScript):
-   - Multi-page SPA with React Router
-   - NavBar component on all pages
-   - HomePage: hero + featured items
-   - MenuPage: list items with category filter tabs + search input
-   - CreateOrderPage: select items, set table number, auto-calculate total, submit
-   - ReservationPage: booking form with validation
-   - AdminDashboard: stats cards + tabbed tables for orders/reservations/menu management
-   - Toast notification system for success/error feedback
-   - Responsive CSS (Tailwind utility classes)
+1. Rebuild the React frontend using existing backend.did bindings:
+   - Home page with hero section and feature highlights
+   - Menu page with category filter tabs and live search, item cards with availability badges
+   - Create Order page with selectable items, quantity controls, running total, table number input
+   - Reservations page with validated booking form
+   - Admin Dashboard with stats overview and tabbed management (Orders, Reservations, Menu CRUD)
+   - Navbar across all pages
+2. Wire all pages to the Motoko backend APIs (getMenuItems, createOrder, createReservation, getOrders, getReservations, getAdminStats, addMenuItem, updateMenuItem, deleteMenuItem, updateOrderStatus, deleteOrder, deleteReservation)
+3. Apply deterministic data-ocid markers on all interactive surfaces
+4. Validate and deploy

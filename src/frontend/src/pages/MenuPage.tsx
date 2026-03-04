@@ -10,6 +10,14 @@ import { useMemo, useState } from "react";
 const CATEGORIES = ["All", "Appetizer", "Main", "Dessert", "Drink"] as const;
 type Category = (typeof CATEGORIES)[number];
 
+const CATEGORY_OCIDS: Record<string, string> = {
+  All: "menu.category_all_tab",
+  Appetizer: "menu.category_appetizer_tab",
+  Main: "menu.category_main_tab",
+  Dessert: "menu.category_dessert_tab",
+  Drink: "menu.category_drink_tab",
+};
+
 function MenuCardSkeleton() {
   return (
     <Card className="overflow-hidden border-border/60">
@@ -100,6 +108,7 @@ export default function MenuPage() {
             <button
               key={cat}
               type="button"
+              data-ocid={CATEGORY_OCIDS[cat]}
               onClick={() => setActiveCategory(cat)}
               className={`font-body text-sm px-4 py-1.5 rounded-full border transition-all duration-200 ${
                 activeCategory === cat
@@ -120,13 +129,17 @@ export default function MenuPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 font-body text-sm"
+            data-ocid="menu.search_input"
           />
         </div>
       </motion.div>
 
       {/* Loading skeletons */}
       {isLoading && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+          data-ocid="menu.loading_state"
+        >
           {(["a", "b", "c", "d", "e", "f", "g", "h"] as const).map((k) => (
             <MenuCardSkeleton key={k} />
           ))}
@@ -139,6 +152,7 @@ export default function MenuPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="flex flex-col items-center justify-center py-20 text-center"
+          data-ocid="menu.empty_state"
         >
           <ChefHat className="h-12 w-12 text-muted-foreground/30 mb-4" />
           <h3 className="font-display text-xl text-foreground mb-2">
@@ -166,6 +180,7 @@ export default function MenuPage() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.04, duration: 0.35 }}
+                data-ocid={`menu.item.${index + 1}`}
               >
                 <Card
                   className={`menu-card h-full border-border/60 overflow-hidden ${

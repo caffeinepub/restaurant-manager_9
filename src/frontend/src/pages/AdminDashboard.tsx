@@ -95,7 +95,10 @@ function StatCard({
               {label}
             </p>
             {isLoading ? (
-              <Skeleton className="h-7 w-20 mt-1" />
+              <Skeleton
+                className="h-7 w-20 mt-1"
+                data-ocid="admin.loading_state"
+              />
             ) : (
               <p className="font-display text-2xl font-bold text-foreground">
                 {value}
@@ -214,7 +217,7 @@ function MenuItemDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpen}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md" data-ocid="admin.menu.dialog">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">
             {isEdit ? "Edit Menu Item" : "Add Menu Item"}
@@ -228,9 +231,13 @@ function MenuItemDialog({
               onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
               placeholder="e.g. Soupe à l'oignon"
               className={`font-body text-sm ${errors.name ? "border-destructive" : ""}`}
+              data-ocid="admin.menu.name_input"
             />
             {errors.name && (
-              <p className="font-body text-xs text-destructive">
+              <p
+                className="font-body text-xs text-destructive"
+                data-ocid="admin.menu.name_error"
+              >
                 {errors.name}
               </p>
             )}
@@ -243,7 +250,10 @@ function MenuItemDialog({
                 value={form.category}
                 onValueChange={(v) => setForm((p) => ({ ...p, category: v }))}
               >
-                <SelectTrigger className="font-body text-sm">
+                <SelectTrigger
+                  className="font-body text-sm"
+                  data-ocid="admin.menu.category_select"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -268,6 +278,7 @@ function MenuItemDialog({
                 }
                 placeholder="0.00"
                 className={`font-body text-sm ${errors.price ? "border-destructive" : ""}`}
+                data-ocid="admin.menu.price_input"
               />
               {errors.price && (
                 <p className="font-body text-xs text-destructive">
@@ -282,6 +293,7 @@ function MenuItemDialog({
               id="available"
               checked={form.available}
               onCheckedChange={(v) => setForm((p) => ({ ...p, available: v }))}
+              data-ocid="admin.menu.available_switch"
             />
             <Label
               htmlFor="available"
@@ -297,6 +309,7 @@ function MenuItemDialog({
               variant="outline"
               onClick={onClose}
               className="font-body text-sm"
+              data-ocid="admin.menu.dialog.cancel_button"
             >
               Cancel
             </Button>
@@ -304,6 +317,7 @@ function MenuItemDialog({
               type="submit"
               disabled={isPending}
               className="font-body text-sm bg-primary hover:bg-primary/90"
+              data-ocid="admin.menu.dialog.save_button"
             >
               {isPending ? (
                 <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
@@ -452,13 +466,25 @@ export default function AdminDashboard() {
       >
         <Tabs defaultValue="orders">
           <TabsList className="mb-6 bg-secondary/50 border border-border/40">
-            <TabsTrigger value="orders" className="font-body text-sm">
+            <TabsTrigger
+              value="orders"
+              className="font-body text-sm"
+              data-ocid="admin.orders_tab"
+            >
               Orders
             </TabsTrigger>
-            <TabsTrigger value="reservations" className="font-body text-sm">
+            <TabsTrigger
+              value="reservations"
+              className="font-body text-sm"
+              data-ocid="admin.reservations_tab"
+            >
               Reservations
             </TabsTrigger>
-            <TabsTrigger value="menu" className="font-body text-sm">
+            <TabsTrigger
+              value="menu"
+              className="font-body text-sm"
+              data-ocid="admin.menu_tab"
+            >
               Menu
             </TabsTrigger>
           </TabsList>
@@ -474,13 +500,19 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent className="p-0">
                 {ordersLoading ? (
-                  <div className="p-6 space-y-3">
+                  <div
+                    className="p-6 space-y-3"
+                    data-ocid="admin.orders.loading_state"
+                  >
                     {(["a", "b", "c", "d"] as const).map((k) => (
                       <Skeleton key={k} className="h-12 w-full" />
                     ))}
                   </div>
                 ) : !orders || orders.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div
+                    className="flex flex-col items-center justify-center py-16 text-center"
+                    data-ocid="admin.orders.empty_state"
+                  >
                     <ShoppingBag className="h-10 w-10 text-muted-foreground/25 mb-3" />
                     <p className="font-body text-sm text-muted-foreground">
                       No orders yet.
@@ -488,7 +520,7 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
-                    <Table>
+                    <Table data-ocid="admin.orders.table">
                       <TableHeader>
                         <TableRow className="border-border/40">
                           <TableHead className="font-body text-xs">
@@ -512,10 +544,11 @@ export default function AdminDashboard() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {orders.map((order) => (
+                        {orders.map((order, index) => (
                           <TableRow
                             key={Number(order.id)}
                             className="border-border/30"
+                            data-ocid={`admin.orders.row.${index + 1}`}
                           >
                             <TableCell className="font-body text-sm font-medium">
                               #{Number(order.id)}
@@ -545,7 +578,10 @@ export default function AdminDashboard() {
                                     handleStatusChange(order.id, v)
                                   }
                                 >
-                                  <SelectTrigger className="font-body text-xs h-7 w-28 border-border/50">
+                                  <SelectTrigger
+                                    className="font-body text-xs h-7 w-28 border-border/50"
+                                    data-ocid={`admin.order.status_select.${index + 1}`}
+                                  >
                                     <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent>
@@ -566,6 +602,8 @@ export default function AdminDashboard() {
                                   className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                                   onClick={() => handleDeleteOrder(order.id)}
                                   disabled={deleteOrder.isPending}
+                                  data-ocid={`admin.order.delete_button.${index + 1}`}
+                                  aria-label={`Delete order #${Number(order.id)}`}
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </Button>
@@ -592,13 +630,19 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent className="p-0">
                 {reservationsLoading ? (
-                  <div className="p-6 space-y-3">
+                  <div
+                    className="p-6 space-y-3"
+                    data-ocid="admin.reservations.loading_state"
+                  >
                     {(["a", "b", "c", "d"] as const).map((k) => (
                       <Skeleton key={k} className="h-12 w-full" />
                     ))}
                   </div>
                 ) : !reservations || reservations.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div
+                    className="flex flex-col items-center justify-center py-16 text-center"
+                    data-ocid="admin.reservations.empty_state"
+                  >
                     <CalendarCheck className="h-10 w-10 text-muted-foreground/25 mb-3" />
                     <p className="font-body text-sm text-muted-foreground">
                       No reservations yet.
@@ -606,7 +650,7 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
-                    <Table>
+                    <Table data-ocid="admin.reservations.table">
                       <TableHeader>
                         <TableRow className="border-border/40">
                           <TableHead className="font-body text-xs">
@@ -630,10 +674,11 @@ export default function AdminDashboard() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {reservations.map((res) => (
+                        {reservations.map((res, index) => (
                           <TableRow
                             key={Number(res.id)}
                             className="border-border/30"
+                            data-ocid={`admin.reservations.row.${index + 1}`}
                           >
                             <TableCell className="font-body text-sm font-medium">
                               {res.customerName}
@@ -662,6 +707,8 @@ export default function AdminDashboard() {
                                 className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                                 onClick={() => handleDeleteReservation(res.id)}
                                 disabled={deleteReservation.isPending}
+                                data-ocid={`admin.reservation.delete_button.${index + 1}`}
+                                aria-label={`Delete reservation for ${res.customerName}`}
                               >
                                 <Trash2 className="h-3.5 w-3.5" />
                               </Button>
@@ -688,6 +735,7 @@ export default function AdminDashboard() {
                   size="sm"
                   onClick={openAddDialog}
                   className="font-body text-xs bg-primary hover:bg-primary/90 h-8"
+                  data-ocid="admin.menu.add_button"
                 >
                   <Plus className="mr-1.5 h-3.5 w-3.5" />
                   Add Item
@@ -695,13 +743,19 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent className="p-0">
                 {menuLoading ? (
-                  <div className="p-6 space-y-3">
+                  <div
+                    className="p-6 space-y-3"
+                    data-ocid="admin.menu.loading_state"
+                  >
                     {(["a", "b", "c", "d"] as const).map((k) => (
                       <Skeleton key={k} className="h-12 w-full" />
                     ))}
                   </div>
                 ) : !menuItems || menuItems.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
+                  <div
+                    className="flex flex-col items-center justify-center py-16 text-center"
+                    data-ocid="admin.menu.empty_state"
+                  >
                     <ChefHat className="h-10 w-10 text-muted-foreground/25 mb-3" />
                     <p className="font-body text-sm text-muted-foreground mb-4">
                       No menu items yet.
@@ -709,6 +763,7 @@ export default function AdminDashboard() {
                     <Button
                       onClick={openAddDialog}
                       className="font-body text-sm bg-primary hover:bg-primary/90"
+                      data-ocid="admin.menu.add_button"
                     >
                       <Plus className="mr-2 h-4 w-4" />
                       Add First Item
@@ -716,7 +771,7 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
-                    <Table>
+                    <Table data-ocid="admin.menu.table">
                       <TableHeader>
                         <TableRow className="border-border/40">
                           <TableHead className="font-body text-xs">
@@ -737,10 +792,11 @@ export default function AdminDashboard() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {menuItems.map((item) => (
+                        {menuItems.map((item, index) => (
                           <TableRow
                             key={Number(item.id)}
                             className="border-border/30"
+                            data-ocid={`admin.menu.item.${index + 1}`}
                           >
                             <TableCell className="font-body text-sm font-medium">
                               {item.name}
@@ -774,6 +830,8 @@ export default function AdminDashboard() {
                                   size="icon"
                                   className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10"
                                   onClick={() => openEditDialog(item)}
+                                  data-ocid={`admin.menu.edit_button.${index + 1}`}
+                                  aria-label={`Edit ${item.name}`}
                                 >
                                   <Edit2 className="h-3.5 w-3.5" />
                                 </Button>
@@ -785,6 +843,8 @@ export default function AdminDashboard() {
                                     handleDeleteMenuItem(item.id, item.name)
                                   }
                                   disabled={deleteMenuItemMutation.isPending}
+                                  data-ocid={`admin.menu.delete_button.${index + 1}`}
+                                  aria-label={`Delete ${item.name}`}
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </Button>

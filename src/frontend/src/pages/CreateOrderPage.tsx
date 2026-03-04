@@ -8,13 +8,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCreateOrder, useMenuItems } from "@/hooks/useQueries";
 import type { MenuItem } from "@/hooks/useQueries";
 import {
+  CheckCircle2,
   Loader2,
   Minus,
   Plus,
   ShoppingCart,
   UtensilsCrossed,
 } from "lucide-react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -25,16 +26,19 @@ function MenuItemCard({
   quantity,
   onAdd,
   onRemove,
+  index,
 }: {
   item: MenuItem;
   quantity: number;
   onAdd: () => void;
   onRemove: () => void;
+  index: number;
 }) {
   const isSelected = quantity > 0;
 
   return (
     <Card
+      data-ocid={`order.item.${index + 1}`}
       className={`border transition-all duration-200 ${
         isSelected
           ? "border-primary/40 bg-primary/5 shadow-warm"
@@ -69,6 +73,7 @@ function MenuItemCard({
               className="h-7 w-7 rounded-full border-border/60"
               onClick={onRemove}
               disabled={quantity === 0}
+              aria-label={`Remove one ${item.name}`}
             >
               <Minus className="h-3 w-3" />
             </Button>
@@ -80,6 +85,7 @@ function MenuItemCard({
               size="icon"
               className="h-7 w-7 rounded-full border-border/60 hover:bg-primary/10 hover:border-primary/40"
               onClick={onAdd}
+              aria-label={`Add one ${item.name}`}
             >
               <Plus className="h-3 w-3" />
             </Button>
@@ -105,6 +111,10 @@ export default function CreateOrderPage() {
 
   const [tableNumber, setTableNumber] = useState("");
   const [quantities, setQuantities] = useState<QuantityMap>({});
+  const [orderSuccess, setOrderSuccess] = useState<{
+    tableNum: number;
+    total: number;
+  } | null>(null);
 
   const availableItems = useMemo(
     () => (menuItems ?? []).filter((item) => item.available),
@@ -175,6 +185,7 @@ export default function CreateOrderPage() {
         totalPrice: total,
       });
 
+      setOrderSuccess({ tableNum, total });
       toast.success(
         `Order placed for Table ${tableNum}! Total: $${total.toFixed(2)}`,
       );
@@ -216,6 +227,38 @@ export default function CreateOrderPage() {
         </motion.div>
       </div>
 
+      {/* Success message */}
+      <AnimatePresence>
+        {orderSuccess && (
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.35 }}
+            className="mb-8 rounded-xl border border-chart-3/30 bg-chart-3/10 px-5 py-4 flex items-center gap-3"
+            data-ocid="order.success_state"
+          >
+            <CheckCircle2 className="h-5 w-5 text-chart-3 shrink-0" />
+            <div>
+              <p className="font-body text-sm font-semibold text-foreground">
+                Order placed successfully!
+              </p>
+              <p className="font-body text-xs text-muted-foreground">
+                Table {orderSuccess.tableNum} — Total: $
+                {orderSuccess.total.toFixed(2)}
+              </p>
+            </div>
+            <button
+              type="button"
+              className="ml-auto font-body text-xs text-muted-foreground hover:text-foreground"
+              onClick={() => setOrderSuccess(null)}
+            >
+              Dismiss
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* ── Left: Menu items ──────────────────────────────── */}
@@ -230,13 +273,19 @@ export default function CreateOrderPage() {
             </div>
 
             {isLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div
+                className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                data-ocid="order.loading_state"
+              >
                 {(["a", "b", "c", "d", "e", "f"] as const).map((k) => (
                   <Skeleton key={k} className="h-28 w-full rounded-xl" />
                 ))}
               </div>
             ) : availableItems.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div
+                className="flex flex-col items-center justify-center py-16 text-center"
+                data-ocid="order.empty_state"
+              >
                 <UtensilsCrossed className="h-10 w-10 text-muted-foreground/30 mb-3" />
                 <p className="font-body text-sm text-muted-foreground">
                   No menu items available.
@@ -248,13 +297,14 @@ export default function CreateOrderPage() {
                 animate={{ opacity: 1 }}
                 className="grid grid-cols-1 sm:grid-cols-2 gap-4"
               >
-                {availableItems.map((item) => (
+                {availableItems.map((item, index) => (
                   <MenuItemCard
                     key={Number(item.id)}
                     item={item}
                     quantity={quantities[item.id.toString()] ?? 0}
                     onAdd={() => handleAdd(item)}
                     onRemove={() => handleRemove(item)}
+                    index={index}
                   />
                 ))}
               </motion.div>
@@ -284,6 +334,7 @@ export default function CreateOrderPage() {
                     value={tableNumber}
                     onChange={(e) => setTableNumber(e.target.value)}
                     className="font-body text-sm"
+                    data-ocid="order.table_input"
                   />
                   <p className="font-body text-xs text-muted-foreground">
                     Enter your table number (1–20)
@@ -342,6 +393,7 @@ export default function CreateOrderPage() {
                   type="submit"
                   className="w-full mt-2 font-body font-semibold bg-primary hover:bg-primary/90"
                   disabled={createOrder.isPending}
+                  data-ocid="order.submit_button"
                 >
                   {createOrder.isPending ? (
                     <>

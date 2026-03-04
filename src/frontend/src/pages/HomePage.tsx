@@ -18,7 +18,7 @@ const featureCards = [
     description:
       "Book your perfect evening at La Maison. We'll ensure every detail is just right for your occasion.",
     cta: "Book Now",
-    href: "/reservation" as const,
+    href: "/reservations" as const,
     color: "text-accent-foreground",
     bg: "bg-accent/10",
   },
@@ -128,14 +128,16 @@ export default function HomePage() {
               asChild
               size="lg"
               className="bg-primary hover:bg-primary/90 font-body font-semibold tracking-wide shadow-warm-lg"
+              data-ocid="home.reservations_link"
             >
-              <Link to="/reservation">Reserve a Table</Link>
+              <Link to="/reservations">Reserve a Table</Link>
             </Button>
             <Button
               asChild
               size="lg"
               variant="outline"
               className="border-white/30 text-white hover:bg-white/10 font-body"
+              data-ocid="home.menu_link"
             >
               <Link to="/menu">Explore Menu</Link>
             </Button>

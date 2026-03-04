@@ -13,12 +13,13 @@ import { useCreateReservation } from "@/hooks/useQueries";
 import {
   Calendar,
   CalendarCheck,
+  CheckCircle2,
   Clock,
   Loader2,
   Phone,
   Users,
 } from "lucide-react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -62,6 +63,11 @@ export default function ReservationPage() {
   const createReservation = useCreateReservation();
   const [form, setForm] = useState<FormState>(initialForm);
   const [errors, setErrors] = useState<Partial<FormState>>({});
+  const [confirmed, setConfirmed] = useState<{
+    name: string;
+    date: string;
+    time: string;
+  } | null>(null);
 
   const todayStr = new Date().toISOString().split("T")[0];
 
@@ -101,6 +107,11 @@ export default function ReservationPage() {
         numberOfGuests: BigInt(Number.parseInt(form.numberOfGuests, 10)),
       });
 
+      setConfirmed({
+        name: form.customerName.trim(),
+        date: form.date,
+        time: form.time,
+      });
       toast.success(
         `Reservation confirmed for ${form.customerName} on ${form.date} at ${form.time}!`,
       );
@@ -143,6 +154,37 @@ export default function ReservationPage() {
           </motion.div>
         </div>
 
+        {/* Success confirmation banner */}
+        <AnimatePresence>
+          {confirmed && (
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.35 }}
+              className="mb-8 rounded-xl border border-chart-3/30 bg-chart-3/10 px-5 py-4 flex items-center gap-3"
+              data-ocid="reservation.success_state"
+            >
+              <CheckCircle2 className="h-5 w-5 text-chart-3 shrink-0" />
+              <div>
+                <p className="font-body text-sm font-semibold text-foreground">
+                  Reservation confirmed!
+                </p>
+                <p className="font-body text-xs text-muted-foreground">
+                  {confirmed.name} — {confirmed.date} at {confirmed.time}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="ml-auto font-body text-xs text-muted-foreground hover:text-foreground"
+                onClick={() => setConfirmed(null)}
+              >
+                Dismiss
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Form card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -170,9 +212,13 @@ export default function ReservationPage() {
                       onChange={(e) => setField("customerName", e.target.value)}
                       className={`font-body text-sm ${errors.customerName ? "border-destructive" : ""}`}
                       autoComplete="name"
+                      data-ocid="reservation.name_input"
                     />
                     {errors.customerName && (
-                      <p className="font-body text-xs text-destructive">
+                      <p
+                        className="font-body text-xs text-destructive"
+                        data-ocid="reservation.name_error"
+                      >
                         {errors.customerName}
                       </p>
                     )}
@@ -194,9 +240,13 @@ export default function ReservationPage() {
                       onChange={(e) => setField("phone", e.target.value)}
                       className={`font-body text-sm ${errors.phone ? "border-destructive" : ""}`}
                       autoComplete="tel"
+                      data-ocid="reservation.phone_input"
                     />
                     {errors.phone && (
-                      <p className="font-body text-xs text-destructive">
+                      <p
+                        className="font-body text-xs text-destructive"
+                        data-ocid="reservation.phone_error"
+                      >
                         {errors.phone}
                       </p>
                     )}
@@ -220,9 +270,13 @@ export default function ReservationPage() {
                       value={form.date}
                       onChange={(e) => setField("date", e.target.value)}
                       className={`font-body text-sm ${errors.date ? "border-destructive" : ""}`}
+                      data-ocid="reservation.date_input"
                     />
                     {errors.date && (
-                      <p className="font-body text-xs text-destructive">
+                      <p
+                        className="font-body text-xs text-destructive"
+                        data-ocid="reservation.date_error"
+                      >
                         {errors.date}
                       </p>
                     )}
@@ -243,6 +297,7 @@ export default function ReservationPage() {
                       <SelectTrigger
                         id="time"
                         className={`font-body text-sm ${errors.time ? "border-destructive" : ""}`}
+                        data-ocid="reservation.time_input"
                       >
                         <SelectValue placeholder="Select a time" />
                       </SelectTrigger>
@@ -259,7 +314,10 @@ export default function ReservationPage() {
                       </SelectContent>
                     </Select>
                     {errors.time && (
-                      <p className="font-body text-xs text-destructive">
+                      <p
+                        className="font-body text-xs text-destructive"
+                        data-ocid="reservation.time_error"
+                      >
                         {errors.time}
                       </p>
                     )}
@@ -284,6 +342,7 @@ export default function ReservationPage() {
                       className={`font-body text-sm max-w-xs ${
                         errors.numberOfGuests ? "border-destructive" : ""
                       }`}
+                      data-ocid="reservation.guests_input"
                     >
                       <SelectValue placeholder="How many guests?" />
                     </SelectTrigger>
@@ -300,7 +359,10 @@ export default function ReservationPage() {
                     </SelectContent>
                   </Select>
                   {errors.numberOfGuests && (
-                    <p className="font-body text-xs text-destructive">
+                    <p
+                      className="font-body text-xs text-destructive"
+                      data-ocid="reservation.guests_error"
+                    >
                       {errors.numberOfGuests}
                     </p>
                   )}
@@ -321,6 +383,7 @@ export default function ReservationPage() {
                   type="submit"
                   className="w-full font-body font-semibold bg-primary hover:bg-primary/90 h-11"
                   disabled={createReservation.isPending}
+                  data-ocid="reservation.submit_button"
                 >
                   {createReservation.isPending ? (
                     <>

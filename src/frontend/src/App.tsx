@@ -47,7 +47,7 @@ const orderRoute = createRoute({
 
 const reservationRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/reservation",
+  path: "/reservations",
   component: ReservationPage,
 });
 
